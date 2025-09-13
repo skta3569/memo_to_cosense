@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>チャットページ</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+        }
+        #chat-log {
+            flex-grow: 1;
+            padding: 1em;
+            overflow-y: auto;
+            border-bottom: 1px solid #ccc;
+        }
+        .message {
+            margin-bottom: 0.5em;
+            padding: 0.5em 1em;
+            background-color: #f1f1f1;
+            border-radius: 10px;
+        }
+        #input-container {
+            display: flex;
+            padding: 1em;
+        }
+        #chat-input {
+            flex-grow: 1;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 0.5em;
+            font-size: 1em;
+        }
+        #send-button {
+            border: none;
+            background-color: #007bff;
+            color: white;
+            padding: 0.5em 1em;
+            margin-left: 0.5em;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        #send-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="chat-log">
+        <!-- メッセージはここに追加されます -->
+    </div>
+
+    <div id="input-container">
+        <input type="text" id="chat-input" placeholder="メッセージを入力...">
+        <button id="send-button">送信</button>
+    </div>
+
+    <script>
+        const chatLog = document.getElementById('chat-log');
+        const chatInput = document.getElementById('chat-input');
+        const sendButton = document.getElementById('send-button');
+
+        function addMessage() {
+            const messageText = chatInput.value.trim();
+            if (messageText) {
+                const messageElement = document.createElement('div');
+                messageElement.classList.add('message');
+                messageElement.textContent = messageText;
+                chatLog.appendChild(messageElement);
+
+                // スクロールを一番下に移動
+                chatLog.scrollTop = chatLog.scrollHeight;
+
+                chatInput.value = '';
+            }
+        }
+
+        sendButton.addEventListener('click', addMessage);
+
+        chatInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                addMessage();
+            }
+        });
+    </script>
+
+</body>
+</html>
