@@ -67,9 +67,38 @@
         #send-button:hover {
             background-color: #185abc;
         }
+
+        #page-name-container {
+            display: flex;
+            padding: 1em;
+            background-color: #fff;
+            border-radius: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin: 1em auto;
+            width: 90%;
+            max-width: 700px;
+            align-items: center;
+        }
+        #page-name-container label {
+            margin-right: 1em;
+            font-size: 1.2em;
+            color: #5f6368;
+        }
+        #page-name-input {
+            flex-grow: 1;
+            border: none;
+            background-color: transparent;
+            padding: 0.8em;
+            font-size: 1.2em;
+            outline: none;
+        }
     </style>
 </head>
 <body>
+    <div id="page-name-container">
+        <label for="page-name-input">ページ名:</label>
+        <input type="text" id="page-name-input" value="">
+    </div>
 
     <div id="chat-container">
         <div id="chat-log">
@@ -87,6 +116,17 @@
         const chatLog = document.getElementById('chat-log');
         const chatInput = document.getElementById('chat-input');
         const sendButton = document.getElementById('send-button');
+        const pageNameInput = document.getElementById('page-name-input');
+
+        const getDefaultPageName = () => {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            return `${year}${month}${day}のつぶやき`;
+        };
+
+        pageNameInput.value = getDefaultPageName();
 
         function addMessage() {
             const messageText = chatInput.value.trim();
@@ -114,7 +154,13 @@
 
                 const bodyWithTimestamp = `${quotedText}\n${timestamp}`;
                 const encodedBody = encodeURIComponent(bodyWithTimestamp);
-                window.open(`https://scrapbox.io/skta3569/テスト?body=${encodedBody}`, '_blank');
+                const pageName = pageNameInput.value.trim() || getDefaultPageName();
+                const newWindow = window.open(`https://scrapbox.io/skta3569/${encodeURIComponent(pageName)}?body=${encodedBody}`, '_blank');
+                setTimeout(() => {
+                    if (newWindow && !newWindow.closed) {
+                        newWindow.close();
+                    }
+                }, 3000);
             }
         }
 
