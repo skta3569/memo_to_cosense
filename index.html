@@ -9,57 +9,79 @@
             font-family: sans-serif;
             display: flex;
             flex-direction: column;
+            justify-content: center; /*上下中央揃え*/
+            align-items: center; /*左右中央揃え*/
             height: 100vh;
             margin: 0;
+            background-color: #f0f4f9;
+        }
+        #chat-container {
+            width: 100%;
+            max-width: 800px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end; /* 下に固定 */
         }
         #chat-log {
             flex-grow: 1;
             padding: 1em;
             overflow-y: auto;
-            border-bottom: 1px solid #ccc;
         }
         .message {
-            margin-bottom: 0.5em;
-            padding: 0.5em 1em;
-            background-color: #f1f1f1;
-            border-radius: 10px;
+            margin-bottom: 1em;
+            padding: 1em 1.5em;
+            background-color: #fff;
+            border-radius: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
         #input-container {
             display: flex;
             padding: 1em;
+            background-color: #fff;
+            border-radius: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin: 2em auto; /* 上下にマージン、左右は自動で中央*/
+            width: 90%;
+            max-width: 700px;
         }
         #chat-input {
             flex-grow: 1;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            padding: 0.5em;
-            font-size: 1em;
+            border: none;
+            background-color: transparent;
+            padding: 0.8em;
+            font-size: 1.2em;
+            outline: none; /* フォーカス時のアウトラインを消す */
         }
         #send-button {
             border: none;
-            background-color: #007bff;
+            background-color: #1a73e8;
             color: white;
-            padding: 0.5em 1em;
+            padding: 0.8em 1.5em;
             margin-left: 0.5em;
-            border-radius: 5px;
+            border-radius: 20px;
             cursor: pointer;
             font-size: 1em;
+            transition: background-color 0.3s;
         }
         #send-button:hover {
-            background-color: #0056b3;
+            background-color: #185abc;
         }
     </style>
 </head>
 <body>
 
-    <div id="chat-log">
-        <!-- メッセージはここに追加されます -->
+    <div id="chat-container">
+        <div id="chat-log">
+            <!-- メッセージはここに追加されます -->
+        </div>
+
+        <div id="input-container">
+            <textarea id="chat-input" placeholder="ここにメッセージを入力..." rows="3"></textarea>
+            <button id="send-button">送信</button>
+        </div>
     </div>
 
-    <div id="input-container">
-        <input type="text" id="chat-input" placeholder="メッセージを入力...">
-        <button id="send-button">送信</button>
-    </div>
 
     <script>
         const chatLog = document.getElementById('chat-log');
@@ -78,13 +100,29 @@
                 chatLog.scrollTop = chatLog.scrollHeight;
 
                 chatInput.value = '';
+
+                const quotedText = messageText.split('\n').map(line => `> ${line}`).join('\n');
+
+                const now = new Date();
+                const year = now.getFullYear();
+                const month = String(now.getMonth() + 1).padStart(2, '0');
+                const day = String(now.getDate()).padStart(2, '0');
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                const seconds = String(now.getSeconds()).padStart(2, '0');
+                const timestamp = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+
+                const bodyWithTimestamp = `${quotedText}\n${timestamp}`;
+                const encodedBody = encodeURIComponent(bodyWithTimestamp);
+                window.open(`https://scrapbox.io/skta3569/テスト?body=${encodedBody}`, '_blank');
             }
         }
 
         sendButton.addEventListener('click', addMessage);
 
         chatInput.addEventListener('keydown', (event) => {
-            if (event.key === 'Enter') {
+            if (event.key === 'Enter' && event.shiftKey) {
+                event.preventDefault();
                 addMessage();
             }
         });
